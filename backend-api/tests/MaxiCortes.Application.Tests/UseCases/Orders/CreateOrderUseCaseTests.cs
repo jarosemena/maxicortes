@@ -5,6 +5,7 @@ using MaxiCortes.Application.Interfaces.Repositories;
 using MaxiCortes.Application.Mappers;
 using MaxiCortes.Application.UseCases.Orders;
 using MaxiCortes.Domain.Entities;
+using MaxiCortes.Domain.Interfaces;
 using MaxiCortes.Domain.ValueObjects;
 using MaxiCortes.Domain.Services;
 using Moq;
@@ -16,8 +17,8 @@ public class CreateOrderUseCaseTests
 {
     private readonly Mock<IOrderRepository> _mockOrderRepository;
     private readonly Mock<IMaterialRepository> _mockMaterialRepository;
-    private readonly Mock<OrderValidationService> _mockValidationService;
-    private readonly Mock<CostCalculationService> _mockCostService;
+    private readonly Mock<IOrderValidationService> _mockValidationService;
+    private readonly CostCalculationService _costService;
     private readonly IMapper _mapper;
     private readonly CreateOrderUseCase _useCase;
 
@@ -25,18 +26,21 @@ public class CreateOrderUseCaseTests
     {
         _mockOrderRepository = new Mock<IOrderRepository>();
         _mockMaterialRepository = new Mock<IMaterialRepository>();
-        _mockValidationService = new Mock<OrderValidationService>();
-        _mockCostService = new Mock<CostCalculationService>();
+        _mockValidationService = new Mock<IOrderValidationService>();
+        _costService = new CostCalculationService();
         
         var config = new MapperConfiguration(cfg => cfg.AddProfile<MappingProfile>());
         _mapper = config.CreateMapper();
+        
+        var mockLogger = new Mock<Microsoft.Extensions.Logging.ILogger<CreateOrderUseCase>>();
         
         _useCase = new CreateOrderUseCase(
             _mockOrderRepository.Object,
             _mockMaterialRepository.Object,
             _mockValidationService.Object,
-            _mockCostService.Object,
-            _mapper
+            _costService,
+            _mapper,
+            mockLogger.Object
         );
     }
 
@@ -44,13 +48,13 @@ public class CreateOrderUseCaseTests
     public async Task ExecuteAsync_WithValidRequest_ShouldCreateOrderSuccessfully()
     {
         // Arrange
-        var request = CreateValidOrderRequest();
         var material = CreateTestMaterial();
-        var expectedOrder = CreateTestOrder();
+        var request = CreateValidOrderRequest(material.Id);
+        var expectedOrder = CreateTestOrder(request.CustomerId);
         var validationResult = new ValidationResult(true, new List<string>());
 
         _mockMaterialRepository
-            .Setup(r => r.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+            .Setup(r => r.GetByIdAsync(material.Id, It.IsAny<CancellationToken>()))
             .ReturnsAsync(material);
 
         _mockOrderRepository
@@ -124,10 +128,15 @@ public class CreateOrderUseCaseTests
     {
         // Arrange
         var request = CreateValidOrderRequest();
+        var validationResult = new ValidationResult(true, new List<string>());
 
         _mockOrderRepository
             .Setup(r => r.GetByCustomerIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new List<Order>());
+
+        _mockValidationService
+            .Setup(s => s.ValidateCustomerLimits(It.IsAny<Guid>(), It.IsAny<IEnumerable<Order>>()))
+            .Returns(validationResult);
 
         _mockMaterialRepository
             .Setup(r => r.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
@@ -169,7 +178,8 @@ public class CreateOrderUseCaseTests
     public void Constructor_WithNullOrderRepository_ShouldThrowArgumentNullException()
     {
         // Act & Assert
-        Action act = () => new CreateOrderUseCase(null!, _mockMaterialRepository.Object, _mockValidationService.Object, _mockCostService.Object, _mapper);
+        var mockLogger = new Mock<Microsoft.Extensions.Logging.ILogger<CreateOrderUseCase>>();
+        Action act = () => new CreateOrderUseCase(null!, _mockMaterialRepository.Object, _mockValidationService.Object, _costService, _mapper, mockLogger.Object);
         act.Should().Throw<ArgumentNullException>().WithParameterName("orderRepository");
     }
 
@@ -177,7 +187,8 @@ public class CreateOrderUseCaseTests
     public void Constructor_WithNullMaterialRepository_ShouldThrowArgumentNullException()
     {
         // Act & Assert
-        Action act = () => new CreateOrderUseCase(_mockOrderRepository.Object, null!, _mockValidationService.Object, _mockCostService.Object, _mapper);
+        var mockLogger = new Mock<Microsoft.Extensions.Logging.ILogger<CreateOrderUseCase>>();
+        Action act = () => new CreateOrderUseCase(_mockOrderRepository.Object, null!, _mockValidationService.Object, _costService, _mapper, mockLogger.Object);
         act.Should().Throw<ArgumentNullException>().WithParameterName("materialRepository");
     }
 
@@ -185,7 +196,8 @@ public class CreateOrderUseCaseTests
     public void Constructor_WithNullValidationService_ShouldThrowArgumentNullException()
     {
         // Act & Assert
-        Action act = () => new CreateOrderUseCase(_mockOrderRepository.Object, _mockMaterialRepository.Object, null!, _mockCostService.Object, _mapper);
+        var mockLogger = new Mock<Microsoft.Extensions.Logging.ILogger<CreateOrderUseCase>>();
+        Action act = () => new CreateOrderUseCase(_mockOrderRepository.Object, _mockMaterialRepository.Object, null!, _costService, _mapper, mockLogger.Object);
         act.Should().Throw<ArgumentNullException>().WithParameterName("validationService");
     }
 
@@ -193,7 +205,8 @@ public class CreateOrderUseCaseTests
     public void Constructor_WithNullCostService_ShouldThrowArgumentNullException()
     {
         // Act & Assert
-        Action act = () => new CreateOrderUseCase(_mockOrderRepository.Object, _mockMaterialRepository.Object, _mockValidationService.Object, null!, _mapper);
+        var mockLogger = new Mock<Microsoft.Extensions.Logging.ILogger<CreateOrderUseCase>>();
+        Action act = () => new CreateOrderUseCase(_mockOrderRepository.Object, _mockMaterialRepository.Object, _mockValidationService.Object, null!, _mapper, mockLogger.Object);
         act.Should().Throw<ArgumentNullException>().WithParameterName("costCalculationService");
     }
 
@@ -201,7 +214,8 @@ public class CreateOrderUseCaseTests
     public void Constructor_WithNullMapper_ShouldThrowArgumentNullException()
     {
         // Act & Assert
-        Action act = () => new CreateOrderUseCase(_mockOrderRepository.Object, _mockMaterialRepository.Object, _mockValidationService.Object, _mockCostService.Object, null!);
+        var mockLogger = new Mock<Microsoft.Extensions.Logging.ILogger<CreateOrderUseCase>>();
+        Action act = () => new CreateOrderUseCase(_mockOrderRepository.Object, _mockMaterialRepository.Object, _mockValidationService.Object, _costService, null!, mockLogger.Object);
         act.Should().Throw<ArgumentNullException>().WithParameterName("mapper");
     }
 
@@ -248,13 +262,13 @@ public class CreateOrderUseCaseTests
     public async Task ExecuteAsync_WithOrderValidationFailure_ShouldThrowInvalidOperationException()
     {
         // Arrange
-        var request = CreateValidOrderRequest();
         var material = CreateTestMaterial();
+        var request = CreateValidOrderRequest(material.Id);
         var customerValidationResult = new ValidationResult(true, new List<string>());
         var orderValidationResult = new ValidationResult(false, new[] { "Order validation failed" });
 
         _mockMaterialRepository
-            .Setup(r => r.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+            .Setup(r => r.GetByIdAsync(material.Id, It.IsAny<CancellationToken>()))
             .ReturnsAsync(material);
 
         _mockOrderRepository
@@ -279,14 +293,14 @@ public class CreateOrderUseCaseTests
     public async Task ExecuteAsync_WithStockValidationFailure_ShouldThrowInvalidOperationException()
     {
         // Arrange
-        var request = CreateValidOrderRequest();
         var material = CreateTestMaterial();
+        var request = CreateValidOrderRequest(material.Id);
         var customerValidationResult = new ValidationResult(true, new List<string>());
         var orderValidationResult = new ValidationResult(true, new List<string>());
         var stockValidationResult = new ValidationResult(false, new[] { "Insufficient stock" });
 
         _mockMaterialRepository
-            .Setup(r => r.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+            .Setup(r => r.GetByIdAsync(material.Id, It.IsAny<CancellationToken>()))
             .ReturnsAsync(material);
 
         _mockOrderRepository
@@ -315,15 +329,18 @@ public class CreateOrderUseCaseTests
     public async Task ExecuteAsync_WithMultipleMaterials_ShouldCreateOrderSuccessfully()
     {
         // Arrange
-        var request = CreateOrderRequestWithMultipleMaterials();
         var material1 = CreateTestMaterial();
         var material2 = CreateTestMaterial();
-        var expectedOrder = CreateTestOrder();
+        var request = CreateOrderRequestWithMultipleMaterials(material1.Id, material2.Id);
+        var expectedOrder = CreateTestOrder(request.CustomerId);
         var validationResult = new ValidationResult(true, new List<string>());
 
         _mockMaterialRepository
-            .SetupSequence(r => r.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(material1)
+            .Setup(r => r.GetByIdAsync(material1.Id, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(material1);
+
+        _mockMaterialRepository
+            .Setup(r => r.GetByIdAsync(material2.Id, It.IsAny<CancellationToken>()))
             .ReturnsAsync(material2);
 
         _mockOrderRepository
@@ -357,17 +374,17 @@ public class CreateOrderUseCaseTests
         _mockOrderRepository.Verify(r => r.AddAsync(It.IsAny<Order>(), It.IsAny<CancellationToken>()), Times.Once);
     }
 
-    private static CreateOrderRequest CreateValidOrderRequest()
+    private static CreateOrderRequest CreateValidOrderRequest(Guid? materialId = null)
     {
         return new CreateOrderRequest
         {
-            CustomerId = Guid.NewGuid(),
+            CustomerId = Guid.Parse("11111111-1111-1111-1111-111111111111"),
             OrderNumber = "ORD-001",
             Items = new List<CreateOrderItemRequest>
             {
                 new CreateOrderItemRequest
                 {
-                    MaterialId = Guid.NewGuid(),
+                    MaterialId = materialId ?? Guid.Parse("22222222-2222-2222-2222-222222222222"),
                     Quantity = 2,
                     Priority = "Normal",
                     Geometry = new PolygonDto
@@ -396,22 +413,22 @@ public class CreateOrderUseCaseTests
         );
     }
 
-    private static Order CreateTestOrder()
+    private static Order CreateTestOrder(Guid? customerId = null)
     {
-        return new Order(Guid.NewGuid(), "ORD-001");
+        return new Order(customerId ?? Guid.Parse("11111111-1111-1111-1111-111111111111"), "ORD-001");
     }
 
-    private static CreateOrderRequest CreateOrderRequestWithMultipleMaterials()
+    private static CreateOrderRequest CreateOrderRequestWithMultipleMaterials(Guid? material1Id = null, Guid? material2Id = null)
     {
         return new CreateOrderRequest
         {
-            CustomerId = Guid.NewGuid(),
+            CustomerId = Guid.Parse("11111111-1111-1111-1111-111111111111"),
             OrderNumber = "ORD-002",
             Items = new List<CreateOrderItemRequest>
             {
                 new CreateOrderItemRequest
                 {
-                    MaterialId = Guid.NewGuid(),
+                    MaterialId = material1Id ?? Guid.Parse("33333333-3333-3333-3333-333333333333"),
                     Quantity = 1,
                     Priority = "High",
                     Geometry = new CircleDto
@@ -422,7 +439,7 @@ public class CreateOrderUseCaseTests
                 },
                 new CreateOrderItemRequest
                 {
-                    MaterialId = Guid.NewGuid(),
+                    MaterialId = material2Id ?? Guid.Parse("44444444-4444-4444-4444-444444444444"),
                     Quantity = 3,
                     Priority = "Normal",
                     Geometry = new OvalDto

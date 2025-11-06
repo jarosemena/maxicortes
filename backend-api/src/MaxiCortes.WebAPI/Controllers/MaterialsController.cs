@@ -5,6 +5,9 @@ using MaxiCortes.Application.UseCases.Materials;
 
 namespace MaxiCortes.WebAPI.Controllers;
 
+/// <summary>
+/// Controller for managing materials in the cutting optimization system
+/// </summary>
 [ApiController]
 [Route("api/[controller]")]
 [Produces("application/json")]

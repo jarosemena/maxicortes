@@ -4,6 +4,9 @@ using MaxiCortes.Application.UseCases.Optimization;
 
 namespace MaxiCortes.WebAPI.Controllers;
 
+/// <summary>
+/// Controller for managing cutting optimization requests and results
+/// </summary>
 [ApiController]
 [Route("api/[controller]")]
 [Produces("application/json")]

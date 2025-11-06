@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MaxiCortes.Application.Interfaces.Repositories;
 using MaxiCortes.Application.Interfaces.Services;
+using MaxiCortes.Domain.Interfaces;
 using MaxiCortes.Domain.Services;
 using MaxiCortes.Infrastructure.Data.Contexts;
 using MaxiCortes.Infrastructure.Data.Repositories;
@@ -28,7 +29,7 @@ public static class DependencyInjection
         services.AddScoped<IOrderRepository, OrderRepository>();
 
         // Domain Services
-        services.AddScoped<OrderValidationService>();
+        services.AddScoped<IOrderValidationService, OrderValidationService>();
         services.AddScoped<CostCalculationService>();
 
         // External Services

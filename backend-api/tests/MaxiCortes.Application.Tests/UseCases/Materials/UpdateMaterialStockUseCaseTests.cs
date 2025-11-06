@@ -117,7 +117,7 @@ public class UpdateMaterialStockUseCaseTests
         // Act & Assert
         await _useCase.Invoking(x => x.ExecuteAsync(materialId, request))
             .Should().ThrowAsync<ArgumentException>()
-            .WithMessage("*Reason is required*");
+            .WithMessage("*Reason for stock update is required*");
     }
 
     [Fact]

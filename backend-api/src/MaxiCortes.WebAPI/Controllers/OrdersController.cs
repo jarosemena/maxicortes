@@ -5,6 +5,9 @@ using MaxiCortes.Application.UseCases.Orders;
 
 namespace MaxiCortes.WebAPI.Controllers;
 
+/// <summary>
+/// Controller for managing orders in the cutting optimization system
+/// </summary>
 [ApiController]
 [Route("api/[controller]")]
 [Produces("application/json")]

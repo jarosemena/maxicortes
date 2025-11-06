@@ -116,11 +116,12 @@ public class GetMaterialsUseCaseTests
         var materials = CreateTestMaterials();
         var filter = new MaterialFilterRequest
         {
-            Type = "InvalidType"
+            Type = "InvalidType",
+            SortBy = "Name"
         };
 
         _mockRepository
-            .Setup(r => r.GetPagedAsync(0, 10, null, null, null, null, false, It.IsAny<CancellationToken>()))
+            .Setup(r => r.GetPagedAsync(0, 10, null, null, null, "Name", false, It.IsAny<CancellationToken>()))
             .ReturnsAsync((materials, materials.Count()));
 
         // Act
@@ -129,7 +130,7 @@ public class GetMaterialsUseCaseTests
 
         // Assert
         result.Should().NotBeNull();
-        _mockRepository.Verify(r => r.GetPagedAsync(0, 10, null, null, null, null, false, It.IsAny<CancellationToken>()), Times.Once);
+        _mockRepository.Verify(r => r.GetPagedAsync(0, 10, null, null, null, "Name", false, It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Fact]
@@ -188,7 +189,7 @@ public class GetMaterialsUseCaseTests
     {
         var materials = new List<Material>();
         
-        for (int i = 1; i <= 5; i++)
+        for (int i = 1; i <= 15; i++) // Crear más materiales para los tests
         {
             var material = new Material(
                 $"Test Material {i}",

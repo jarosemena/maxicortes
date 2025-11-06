@@ -2,8 +2,10 @@ using AutoMapper;
 using MaxiCortes.Application.DTOs.Orders;
 using MaxiCortes.Application.Interfaces.Repositories;
 using MaxiCortes.Domain.Entities;
+using MaxiCortes.Domain.Interfaces;
 using MaxiCortes.Domain.Services;
 using MaxiCortes.Domain.ValueObjects;
+using Microsoft.Extensions.Logging;
 
 namespace MaxiCortes.Application.UseCases.Orders;
 
@@ -11,28 +13,34 @@ public class CreateOrderUseCase
 {
     private readonly IOrderRepository _orderRepository;
     private readonly IMaterialRepository _materialRepository;
-    private readonly OrderValidationService _validationService;
+    private readonly IOrderValidationService _validationService;
     private readonly CostCalculationService _costCalculationService;
     private readonly IMapper _mapper;
+    private readonly ILogger<CreateOrderUseCase> _logger;
 
     public CreateOrderUseCase(
         IOrderRepository orderRepository,
         IMaterialRepository materialRepository,
-        OrderValidationService validationService,
+        IOrderValidationService validationService,
         CostCalculationService costCalculationService,
-        IMapper mapper)
+        IMapper mapper,
+        ILogger<CreateOrderUseCase> logger)
     {
         _orderRepository = orderRepository ?? throw new ArgumentNullException(nameof(orderRepository));
         _materialRepository = materialRepository ?? throw new ArgumentNullException(nameof(materialRepository));
         _validationService = validationService ?? throw new ArgumentNullException(nameof(validationService));
         _costCalculationService = costCalculationService ?? throw new ArgumentNullException(nameof(costCalculationService));
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
     public async Task<OrderResponse> ExecuteAsync(CreateOrderRequest request, CancellationToken cancellationToken = default)
     {
         if (request == null)
             throw new ArgumentNullException(nameof(request));
+
+        _logger.LogInformation("Creating order for customer {CustomerId} with {ItemCount} items", 
+            request.CustomerId, request.Items.Count);
 
         // Validate request
         ValidateRequest(request);
@@ -61,7 +69,10 @@ public class CreateOrderUseCase
         // Create and add order items
         foreach (var itemRequest in request.Items)
         {
-            var material = materials.First(m => m.Id == itemRequest.MaterialId);
+            var material = materials.FirstOrDefault(m => m.Id == itemRequest.MaterialId);
+            if (material == null)
+                throw new InvalidOperationException($"Material with ID {itemRequest.MaterialId} not found");
+                
             var geometry = _mapper.Map<Geometry>(itemRequest.Geometry);
             var priority = Enum.Parse<Priority>(itemRequest.Priority, true);
             
@@ -91,6 +102,9 @@ public class CreateOrderUseCase
 
         // Save order
         var savedOrder = await _orderRepository.AddAsync(order, cancellationToken);
+
+        _logger.LogInformation("Order created successfully. OrderId: {OrderId}, CustomerId: {CustomerId}, TotalItems: {TotalItems}", 
+            savedOrder.Id, savedOrder.CustomerId, savedOrder.Items.Count);
 
         // TODO: Raise OrderCreated domain event
         // This would be handled by the domain event dispatcher in a real implementation

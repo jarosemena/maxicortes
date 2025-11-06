@@ -3,6 +3,9 @@ using MaxiCortes.Infrastructure.Data.Contexts;
 
 namespace MaxiCortes.WebAPI.Controllers;
 
+/// <summary>
+/// Controller for health checks and system monitoring
+/// </summary>
 [ApiController]
 [Route("api/[controller]")]
 [Produces("application/json")]

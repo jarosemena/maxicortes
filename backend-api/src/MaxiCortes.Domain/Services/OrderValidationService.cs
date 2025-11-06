@@ -1,9 +1,10 @@
 using MaxiCortes.Domain.Entities;
+using MaxiCortes.Domain.Interfaces;
 using MaxiCortes.Domain.ValueObjects;
 
 namespace MaxiCortes.Domain.Services;
 
-public class OrderValidationService
+public class OrderValidationService : IOrderValidationService
 {
     private const int MaxPendingOrdersPerCustomer = 5;
 
@@ -155,14 +156,3 @@ public class OrderValidationService
     }
 }
 
-public class ValidationResult
-{
-    public bool IsValid { get; }
-    public IReadOnlyList<string> Errors { get; }
-
-    public ValidationResult(bool isValid, IEnumerable<string> errors)
-    {
-        IsValid = isValid;
-        Errors = (errors ?? Enumerable.Empty<string>()).ToList().AsReadOnly();
-    }
-}

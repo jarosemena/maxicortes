@@ -23,6 +23,9 @@ public class UpdateMaterialStockUseCase
         if (request == null)
             throw new ArgumentNullException(nameof(request));
 
+        if (materialId == Guid.Empty)
+            throw new ArgumentException("Material ID is required", nameof(materialId));
+
         // Validate request
         if (request.NewQuantity < 0)
             throw new ArgumentException("Stock quantity cannot be negative");
@@ -34,6 +37,9 @@ public class UpdateMaterialStockUseCase
         var material = await _materialRepository.GetByIdAsync(materialId, cancellationToken);
         if (material == null)
             throw new InvalidOperationException($"Material with ID {materialId} not found");
+
+        if (!material.IsActive)
+            throw new InvalidOperationException("Cannot update stock for inactive material");
 
         // Update stock
         var previousStock = material.StockQuantity;

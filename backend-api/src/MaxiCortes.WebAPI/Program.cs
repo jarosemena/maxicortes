@@ -3,8 +3,20 @@ using MaxiCortes.Application.Mappers;
 using MaxiCortes.WebAPI.Middleware;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Configure Serilog
+Log.Logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(builder.Configuration)
+    .Enrich.FromLogContext()
+    .WriteTo.Console()
+    .WriteTo.File("logs/maxicortes-.log", rollingInterval: RollingInterval.Day)
+    .CreateLogger();
+
+// Use Serilog
+builder.Host.UseSerilog();
 
 // Add services to the container.
 builder.Services.AddControllers();

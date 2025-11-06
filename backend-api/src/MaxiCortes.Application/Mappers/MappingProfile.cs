@@ -55,13 +55,19 @@ public class MappingProfile : Profile
             .Include<OvalDto, Oval>();
 
         CreateMap<PolygonDto, Polygon>()
-            .ConstructUsing(src => new Polygon(src.Points.Select(p => new Point(p.X, p.Y))));
+            .ConstructUsing(src => new Polygon(src.Points.Select(p => new Point(p.X, p.Y))))
+            .ForMember(dest => dest.Points, opt => opt.Ignore());
 
         CreateMap<CircleDto, Circle>()
-            .ConstructUsing(src => new Circle(new Point(src.Center.X, src.Center.Y), src.Radius));
+            .ConstructUsing(src => new Circle(new Point(src.Center.X, src.Center.Y), src.Radius))
+            .ForMember(dest => dest.Center, opt => opt.Ignore())
+            .ForMember(dest => dest.Radius, opt => opt.Ignore());
 
         CreateMap<OvalDto, Oval>()
-            .ConstructUsing(src => new Oval(new Point(src.Center.X, src.Center.Y), src.RadiusX, src.RadiusY));
+            .ConstructUsing(src => new Oval(new Point(src.Center.X, src.Center.Y), src.RadiusX, src.RadiusY))
+            .ForMember(dest => dest.Center, opt => opt.Ignore())
+            .ForMember(dest => dest.RadiusX, opt => opt.Ignore())
+            .ForMember(dest => dest.RadiusY, opt => opt.Ignore());
 
         // Priority enum mapping
         CreateMap<Priority, string>().ConvertUsing(src => src.ToString());

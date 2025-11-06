@@ -1,5 +1,6 @@
 using System.Net;
 using System.Text.Json;
+using Serilog;
 
 namespace MaxiCortes.WebAPI.Middleware;
 
@@ -22,6 +23,11 @@ public class GlobalExceptionMiddleware
         }
         catch (Exception ex)
         {
+            Log.Error(ex, "Unhandled exception occurred. RequestPath: {RequestPath}, Method: {Method}, TraceId: {TraceId}", 
+                context.Request.Path, 
+                context.Request.Method, 
+                context.TraceIdentifier);
+            
             _logger.LogError(ex, "An unhandled exception occurred");
             await HandleExceptionAsync(context, ex);
         }
