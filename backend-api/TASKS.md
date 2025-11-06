@@ -70,13 +70,13 @@ backend-api/
   - Reglas: Validación de dimensiones, stock no negativo
   - Tests: 100% cobertura
   
-- [ ] **Order Entity (Aggregate Root)**
+- [x] **Order Entity (Aggregate Root)**
   - Propiedades: Id, OrderNumber, CustomerId, Status, CreatedAt
   - Métodos: AddItem(), RemoveItem(), CalculateTotal(), CanCancel()
   - Reglas: Estado válido, items no vacíos, límites por cliente
   - Tests: 100% cobertura
 
-- [ ] **OrderItem Entity**
+- [x] **OrderItem Entity**
   - Propiedades: Id, OrderId, MaterialId, Geometry, Quantity, Priority
   - Soporte: Polígonos, círculos, óvalos
   - Validación: Geometría válida, cantidad positiva
@@ -88,7 +88,7 @@ backend-api/
   - Inmutable, validación de moneda
   - Operaciones: Add, Subtract, Multiply
   
-- [ ] **Geometry VO**
+- [x] **Geometry VO**
   - Tipos: Polygon, Circle, Oval
   - Validación: Coordenadas válidas, área positiva
   - Serialización: JSON compatible
@@ -97,22 +97,26 @@ backend-api/
   - Propiedades: Width, Height, Thickness
   - Validación: Valores positivos
 
+- [x] **Point VO**
+  - Propiedades: X, Y coordinates
+  - Operaciones: DistanceTo, Translate
+
 ### T006: Domain Services (TDD)
-- [ ] **OrderValidationService**
+- [x] **OrderValidationService**
   - ValidateStock(): Verificar disponibilidad
   - ValidateCustomerLimits(): Máximo 5 órdenes pendientes
   - ValidateGeometry(): Geometrías válidas
-  - Tests: 100% cobertura
+  - Tests: Pendiente
 
-- [ ] **CostCalculationService**
+- [x] **CostCalculationService**
   - CalculateOrderCost(): Costo total por materiales
   - CalculateWasteCost(): Costo de desperdicio
-  - Tests: 100% cobertura
+  - Tests: Pendiente
 
 ### T007: Domain Events (TDD)
-- [ ] OrderCreated, OrderValidated, OrderCancelled
-- [ ] MaterialStockUpdated, OptimizationRequested
-- [ ] Event handlers interfaces
+- [x] OrderCreated, OrderValidated, OrderCancelled
+- [x] MaterialStockUpdated, OptimizationRequested
+- [x] Event handlers interfaces
 - [ ] Tests: Verificar eventos disparados
 
 ---
@@ -120,65 +124,67 @@ backend-api/
 ## FASE 2: APPLICATION LAYER (Semana 3)
 
 ### T008: DTOs y Mappers
-- [ ] **Request DTOs**
+- [x] **Request DTOs**
   - CreateOrderRequest, UpdateMaterialRequest
   - GeometryDto (polígonos, círculos, óvalos)
   - OptimizationParametersDto
   
-- [ ] **Response DTOs**
+- [x] **Response DTOs**
   - OrderResponse, MaterialResponse
   - OptimizationResultResponse
   - PaginatedResponse<T>
   
-- [ ] **AutoMapper Configuration**
+- [x] **AutoMapper Configuration**
   - Entity ↔ DTO mappings
-  - Tests de mapeo
+  - Tests de mapeo: Pendiente
 
 ### T009: Use Cases - Gestión de Materiales (TDD)
-- [ ] **CreateMaterialUseCase**
+- [x] **CreateMaterialUseCase**
   - Input: CreateMaterialRequest
   - Validación: Datos requeridos, dimensiones válidas
   - Output: MaterialResponse
-  - Tests: Casos exitosos y de error
+  - Tests: Pendiente
   
-- [ ] **GetMaterialsUseCase**
+- [x] **GetMaterialsUseCase**
   - Paginación, filtros por tipo
   - Ordenamiento por nombre, costo
-  - Tests: Diferentes escenarios de filtrado
+  - Tests: Pendiente
   
-- [ ] **UpdateMaterialStockUseCase**
+- [x] **UpdateMaterialStockUseCase**
   - Actualización de stock
   - Validación: Stock no negativo
   - Event: MaterialStockUpdated
+  - Tests: Pendiente
 
 ### T010: Use Cases - Gestión de Órdenes (TDD)
-- [ ] **CreateOrderUseCase**
+- [x] **CreateOrderUseCase**
   - Input: CreateOrderRequest con múltiples materiales
   - Validación: Stock, límites de cliente, geometrías
   - Output: OrderResponse
   - Events: OrderCreated
-  - Tests: Casos complejos multi-material
+  - Tests: Pendiente
   
-- [ ] **GetOrderDetailsUseCase**
+- [x] **GetOrderDetailsUseCase**
   - Incluir items, materiales, resultados de optimización
-  - Tests: Diferentes niveles de detalle
+  - Tests: Pendiente
   
-- [ ] **CancelOrderUseCase**
+- [x] **CancelOrderUseCase**
   - Validación: Solo órdenes pendientes
   - Restaurar stock
   - Event: OrderCancelled
+  - Tests: Pendiente
 
 ### T011: Use Cases - Optimización (TDD)
-- [ ] **RequestOptimizationUseCase**
+- [x] **RequestOptimizationUseCase**
   - Comunicación con servicio Python
   - Manejo de timeouts y errores
   - Almacenamiento de resultados
-  - Tests: Mocks del servicio externo
+  - Tests: Pendiente
   
-- [ ] **GetOptimizationResultsUseCase**
+- [x] **GetOptimizationResultsUseCase**
   - Recuperar patrones de corte
   - Métricas de eficiencia
-  - Tests: Diferentes formatos de resultado
+  - Tests: Pendiente
 
 ---
 
