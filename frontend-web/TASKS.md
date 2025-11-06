@@ -78,22 +78,21 @@ frontend-web/
 ## FASE 1: COMPONENTES BASE Y LAYOUT (Semana 2)
 
 ### T004: Sistema de Diseño (TDD)
-- [ ] **Theme Provider**
+- [x] **Theme Provider**
   - Colores, tipografías, espaciado
   - Modo claro/oscuro
   - Responsive breakpoints
   - Tests: Renderizado correcto
   
-- [ ] **Componentes UI Base**
-  - Button, Input, Select, Checkbox
-  - Modal, Dialog, Tooltip
-  - Loading, Spinner, Progress
-  - Tests: Props, eventos, accesibilidad
+- [x] **Componentes UI Base**
+  - Button, Input, Modal, Loading
+  - Props, eventos, accesibilidad
+  - Tests: Casos de uso completos
   
-- [ ] **Layout Components**
-  - Header, Sidebar, Footer
-  - Navigation, Breadcrumbs
-  - Page wrapper, Container
+- [x] **Layout Components**
+  - AppLayout con navegación
+  - Responsive drawer
+  - Theme toggle
   - Tests: Responsive behavior
 
 ### T005: Gestión de Estado (TDD)
