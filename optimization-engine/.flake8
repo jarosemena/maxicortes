@@ -1,0 +1,54 @@
+[flake8]
+# Configuración de flake8 para MaxiCortes Optimization Engine
+
+# Longitud máxima de línea
+max-line-length = 88
+
+# Códigos de error a ignorar
+ignore = 
+    # E203: whitespace before ':' (conflicto con black)
+    E203,
+    # W503: line break before binary operator (conflicto con black)
+    W503,
+    # E501: line too long (manejado por black)
+    E501
+
+# Archivos y directorios a excluir
+exclude = 
+    .git,
+    __pycache__,
+    .venv,
+    venv,
+    .pytest_cache,
+    build,
+    dist,
+    *.egg-info,
+    .tox,
+    migrations
+
+# Directorio de código fuente
+application-import-names = src
+
+# Complejidad ciclomática máxima
+max-complexity = 10
+
+# Imports por línea
+per-file-ignores =
+    # Tests pueden tener imports no utilizados y líneas largas
+    tests/*:F401,F811,E501
+    # __init__.py pueden tener imports no utilizados
+    __init__.py:F401
+    # Configuración puede tener líneas largas
+    config.py:E501
+
+# Plugins adicionales (instalar si se necesitan)
+# flake8-docstrings: D
+# flake8-import-order: I
+# flake8-bugbear: B
+# flake8-comprehensions: C4
+
+# Configuración para docstrings (si se usa flake8-docstrings)
+docstring-convention = google
+
+# Configuración para imports (si se usa flake8-import-order)
+import-order-style = google
