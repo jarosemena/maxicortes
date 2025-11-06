@@ -12,11 +12,11 @@
 ## FASE 0: DISEÑO Y PLANIFICACIÓN (Semana 1)
 
 ### T001: Configuración Inicial del Proyecto
-- [ ] Setup proyecto React con Vite + TypeScript
-- [ ] Configurar estructura de carpetas (Feature-based)
-- [ ] Setup de Docker y docker-compose
-- [ ] Configurar CI/CD pipeline (GitHub Actions)
-- [ ] Setup de herramientas de desarrollo (ESLint, Prettier, Husky)
+- [x] Setup proyecto React con Vite + TypeScript
+- [x] Configurar estructura de carpetas (Arquitectura Hexagonal)
+- [x] Setup de Docker y docker-compose
+- [x] Configurar CI/CD pipeline (GitHub Actions)
+- [x] Setup de herramientas de desarrollo (ESLint, Prettier, Husky)
 
 **Estructura de Carpetas:**
 ```
@@ -64,8 +64,11 @@ frontend-web/
 ```
 
 ### T003: Definición de Tipos TypeScript
+- [x] Definir tipos para geometrías (Polygon, Circle, Oval)
+- [x] Crear entidades del dominio (Material, Order, Optimization)
+- [x] Definir interfaces de repositorios
+- [x] Crear casos de uso básicos
 - [ ] Generar tipos desde OpenAPI del backend
-- [ ] Definir tipos para geometrías (Polygon, Circle, Oval)
 - [ ] Crear interfaces para componentes
 - [ ] Definir tipos para estado global
 - [ ] Documentar convenciones de tipado
