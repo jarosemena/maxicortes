@@ -96,14 +96,13 @@ frontend-web/
   - Tests: Responsive behavior
 
 ### T005: Gestión de Estado (TDD)
-- [ ] **Zustand Store Setup**
+- [x] **Zustand Store Setup**
   - Store para materiales
   - Store para órdenes
-  - Store para optimización
   - Store para UI state
   - Tests: Actions y reducers
   
-- [ ] **React Query Configuration**
+- [x] **React Query Configuration**
   - Query client setup
   - Cache configuration
   - Error handling

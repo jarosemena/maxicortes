@@ -138,9 +138,35 @@ npm run type-check   # Verificación de tipos
 - ✅ **Loading**: 6 tests - Variantes, overlay, centrado
 - ✅ **AppLayout**: 5 tests - Navegación, responsive
 
+## ✅ COMPLETADO - T005: Gestión de Estado (TDD)
+
+### Zustand Stores Implementados
+- ✅ **useMaterialsStore**: Gestión completa de materiales con filtros
+- ✅ **useOrdersStore**: Gestión de órdenes con estadísticas
+- ✅ **useUIStore**: Estado de UI, notificaciones, modales, loading
+
+### React Query Integration
+- ✅ **Query Client**: Configurado con cache y retry policies
+- ✅ **Materials Queries**: CRUD completo con optimistic updates
+- ✅ **Cache Management**: Invalidación inteligente de queries
+- ✅ **Error Handling**: Manejo robusto de errores de API
+
+### State Management Features
+- ✅ **Persistencia**: LocalStorage para stores críticos
+- ✅ **Filtros Avanzados**: Búsqueda, tipo, disponibilidad
+- ✅ **Optimistic Updates**: UI responsive con rollback
+- ✅ **Loading States**: Granular por operación
+- ✅ **Notifications**: Sistema completo de notificaciones
+
+### Testing Completo
+- ✅ **Store Tests**: 45+ tests para todos los stores
+- ✅ **Query Tests**: Mocking y testing de React Query
+- ✅ **Integration Tests**: Stores + hooks funcionando juntos
+- ✅ **Error Scenarios**: Casos de error y recuperación
+
 ---
 
-**Estado**: ✅ Fase 0 y T004 completadas al 100%
-**Siguiente**: T005 - Gestión de Estado (Zustand + React Query)
-**Componentes**: 5 componentes UI + Layout implementados
-**Tests**: 50+ tests adicionales con TDD riguroso
+**Estado**: ✅ Fase 0, T004 y T005 completadas al 100%
+**Siguiente**: T006 - Routing y Navegación
+**Stores**: 3 stores completos con persistencia
+**Tests**: 95+ tests con cobertura completa de estado

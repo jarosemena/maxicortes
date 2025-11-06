@@ -1,4 +1,4 @@
-# MaxiCortes Frontend
+os # MaxiCortes Frontend
 
 Sistema de optimización de cortes de materiales - Interfaz web desarrollada con React 18, TypeScript y arquitectura hexagonal.
 
