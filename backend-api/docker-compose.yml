@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: maxicortes-postgres
+    environment:
+      POSTGRES_DB: maxicortes
+      POSTGRES_USER: maxicortes
+      POSTGRES_PASSWORD: maxicortes123
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - maxicortes-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: maxicortes-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - maxicortes-network
+
+  backend-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: maxicortes-backend
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Host=postgres;Database=maxicortes;Username=maxicortes;Password=maxicortes123
+      - ConnectionStrings__Redis=redis:6379
+    ports:
+      - "5000:80"
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - maxicortes-network
+
+volumes:
+  postgres_data:
+  redis_data:
+
+networks:
+  maxicortes-network:
+    driver: bridge

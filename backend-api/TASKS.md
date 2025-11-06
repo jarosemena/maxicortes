@@ -12,11 +12,11 @@
 ## FASE 0: DISEÑO Y PLANIFICACIÓN (Semana 1)
 
 ### T001: Configuración Inicial del Proyecto
-- [ ] Crear proyecto .NET 8 Web API
-- [ ] Configurar estructura de carpetas (Clean Architecture)
-- [ ] Setup de Docker y docker-compose
+- [x] Crear proyecto .NET 8 Web API
+- [x] Configurar estructura de carpetas (Clean Architecture)
+- [x] Setup de Docker y docker-compose
 - [ ] Configurar CI/CD pipeline (GitHub Actions)
-- [ ] Setup de herramientas de desarrollo (linters, formatters)
+- [x] Setup de herramientas de desarrollo (linters, formatters)
 
 **Estructura de Carpetas:**
 ```
@@ -35,11 +35,11 @@ backend-api/
 ```
 
 ### T002: Diseño de Base de Datos
-- [ ] Crear diagrama ER completo
-- [ ] Definir esquema SQL para PostgreSQL
-- [ ] Diseñar índices para optimización
-- [ ] Crear script de migración inicial
-- [ ] Documentar modelo de datos
+- [x] Crear diagrama ER completo
+- [x] Definir esquema SQL para PostgreSQL
+- [x] Diseñar índices para optimización
+- [x] Crear script de migración inicial
+- [x] Documentar modelo de datos
 
 **Tablas Principales:**
 ```sql
@@ -65,7 +65,7 @@ backend-api/
 ## FASE 1: DOMAIN LAYER (Semana 2)
 
 ### T004: Entidades del Dominio (TDD)
-- [ ] **Material Entity**
+- [x] **Material Entity**
   - Propiedades: Id, Name, Type, Width, Height, Thickness, Cost, Stock
   - Reglas: Validación de dimensiones, stock no negativo
   - Tests: 100% cobertura
@@ -83,7 +83,7 @@ backend-api/
   - Tests: 100% cobertura
 
 ### T005: Value Objects (TDD)
-- [ ] **Money VO**
+- [x] **Money VO**
   - Propiedades: Amount, Currency
   - Inmutable, validación de moneda
   - Operaciones: Add, Subtract, Multiply
@@ -93,7 +93,7 @@ backend-api/
   - Validación: Coordenadas válidas, área positiva
   - Serialización: JSON compatible
   
-- [ ] **Dimensions VO**
+- [x] **Dimensions VO**
   - Propiedades: Width, Height, Thickness
   - Validación: Valores positivos
 
