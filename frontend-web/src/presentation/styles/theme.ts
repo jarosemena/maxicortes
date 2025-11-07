@@ -185,7 +185,7 @@ const lightTheme: ThemeOptions = {
 };
 
 // Dark theme
-const darkTheme: ThemeOptions = {
+const darkThemeOptions: ThemeOptions = {
   palette: {
     mode: 'dark',
     ...colors,
@@ -209,7 +209,7 @@ const darkTheme: ThemeOptions = {
 };
 
 export const theme = createTheme(lightTheme);
-export const darkTheme = createTheme(darkTheme);
+export const darkTheme = createTheme(darkThemeOptions);
 
 // Theme context type
 export interface ThemeContextType {
