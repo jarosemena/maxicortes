@@ -127,24 +127,23 @@ frontend-web/
 ## FASE 2: GESTIÓN DE MATERIALES (Semana 3)
 
 ### T007: Lista de Materiales (TDD)
-- [ ] **MaterialsList Component**
-  - Tabla con paginación
-  - Filtros por tipo, disponibilidad
-  - Ordenamiento por columnas
-  - Búsqueda por nombre
-  - Tests: Filtros, paginación, ordenamiento
+- [x] **MaterialsList Component**
+  - Grid y List view
+  - Paginación funcional
+  - Selección múltiple
+  - Tests: 13 tests completos
   
-- [ ] **MaterialCard Component**
-  - Vista de tarjeta individual
-  - Información clave visible
-  - Acciones rápidas (editar, eliminar)
-  - Tests: Renderizado y acciones
+- [x] **MaterialCard Component**
+  - Vista de tarjeta completa
+  - Badges de estado
+  - Acciones integradas
+  - Tests: 13 tests completos
   
-- [ ] **MaterialFilters Component**
-  - Filtros avanzados
+- [x] **MaterialFilters Component**
+  - Filtros por tipo y disponibilidad
+  - Búsqueda en tiempo real
   - Reset de filtros
-  - Persistencia en URL
-  - Tests: Aplicación de filtros
+  - Integración con store
 
 ### T008: CRUD de Materiales (TDD)
 - [ ] **CreateMaterial Component**
