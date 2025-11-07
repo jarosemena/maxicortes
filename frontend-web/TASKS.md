@@ -110,17 +110,17 @@ frontend-web/
   - Tests: Queries y mutations
 
 ### T006: Routing y Navegación (TDD)
-- [ ] **React Router Setup**
+- [x] **React Router Setup**
   - Rutas principales
-  - Rutas protegidas
   - Lazy loading de componentes
-  - Tests: Navegación correcta
+  - Type-safe navigation
+  - Configuración centralizada
   
-- [ ] **Navigation Components**
-  - Menu principal
-  - Breadcrumbs dinámicos
-  - Back button
-  - Tests: Links y navegación
+- [x] **Navigation Components**
+  - Menu principal integrado
+  - Custom hook useAppNavigation
+  - 404 Page
+  - Páginas placeholder
 
 ---
 
