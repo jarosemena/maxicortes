@@ -159,17 +159,22 @@ frontend-web/
   - Notificaciones de éxito/error
 
 ### T009: Integración con API (TDD)
-- [ ] **Materials API Client**
+- [x] **Materials API Client**
   - CRUD operations
   - Error handling
   - Loading states
   - Tests: Mocks de API
   
-- [ ] **Materials Hooks**
+- [x] **Materials Hooks**
   - useMaterials, useMaterial
   - useCreateMaterial, useUpdateMaterial
   - useDeleteMaterial
   - Tests: Estados y side effects
+  
+- [x] **Components Updated**
+  - MaterialFormModal usa hooks de API
+  - Materials Page usa hooks de API
+  - Integración completa con backend
 
 ---
 

@@ -1,23 +1,39 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Box, Typography, Button, Fab } from '@mui/material';
 import { Add as AddIcon } from '@mui/icons-material';
+import {
+  useMaterials,
+  useDeleteMaterial,
+  UseMaterialsFilters,
+} from '../../application/hooks/useMaterialsApi';
 import { useMaterialsStore } from '../../application/stores/useMaterialsStore';
-import { useUIStore } from '../../application/stores/useUIStore';
 import { MaterialsList } from '../components/materials/MaterialsList';
 import { MaterialFilters } from '../components/materials/MaterialFilters';
 import { MaterialFormModal } from '../components/materials/MaterialFormModal';
 import { Material } from '../../domain/entities/Material';
+import { Loading } from '../components/ui/Loading';
 
 const MaterialsPage: React.FC = () => {
-  const { getFilteredMaterials, filters, updateFilters, resetFilters, removeMaterial } =
-    useMaterialsStore();
-  const { showSuccess } = useUIStore();
+  const { filters, updateFilters, resetFilters } = useMaterialsStore();
+
+  // Convert store filters to API filters (null -> undefined)
+  const apiFilters: UseMaterialsFilters = useMemo(
+    () => ({
+      type: filters.type || undefined,
+      isActive: filters.availableOnly ? true : undefined,
+      search: filters.search || undefined,
+    }),
+    [filters]
+  );
+
+  const { data: materials = [], isLoading, error } = useMaterials(apiFilters);
+  const deleteMaterial = useDeleteMaterial();
 
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
-  const [selectedMaterial, setSelectedMaterial] = useState<Material | undefined>();
-
-  const materials = getFilteredMaterials();
+  const [selectedMaterial, setSelectedMaterial] = useState<
+    Material | undefined
+  >();
 
   const handleCreate = () => {
     setCreateModalOpen(true);
@@ -28,10 +44,9 @@ const MaterialsPage: React.FC = () => {
     setEditModalOpen(true);
   };
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     if (window.confirm('Are you sure you want to delete this material?')) {
-      removeMaterial(id);
-      showSuccess('Material deleted successfully');
+      await deleteMaterial.mutateAsync(id);
     }
   };
 
@@ -39,6 +54,20 @@ const MaterialsPage: React.FC = () => {
     setSelectedMaterial(material);
     setEditModalOpen(true);
   };
+
+  if (isLoading) {
+    return <Loading />;
+  }
+
+  if (error) {
+    return (
+      <Box sx={{ p: 3 }}>
+        <Typography color="error">
+          Error loading materials: {error.message}
+        </Typography>
+      </Box>
+    );
+  }
 
   return (
     <Box>
@@ -55,7 +84,7 @@ const MaterialsPage: React.FC = () => {
             Materials Management
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            Manage your materials inventory
+            Manage your materials inventory ({materials.length} total)
           </Typography>
         </Box>
         <Button
@@ -79,6 +108,7 @@ const MaterialsPage: React.FC = () => {
         onEdit={handleEdit}
         onDelete={handleDelete}
         onView={handleView}
+        loading={deleteMaterial.isPending}
       />
 
       {/* Floating Action Button for mobile */}

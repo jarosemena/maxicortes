@@ -164,9 +164,74 @@ npm run type-check   # Verificación de tipos
 - ✅ **Integration Tests**: Stores + hooks funcionando juntos
 - ✅ **Error Scenarios**: Casos de error y recuperación
 
+## ✅ COMPLETADO - T006: Routing y Navegación (TDD)
+
+### React Router Implementado
+- ✅ **Routes Configuration**: Rutas centralizadas y type-safe
+- ✅ **Lazy Loading**: Componentes cargados bajo demanda
+- ✅ **Navigation Hook**: useAppNavigation personalizado
+- ✅ **404 Page**: Página de error implementada
+- ✅ **Páginas Placeholder**: Dashboard, Materials, Orders, Optimization
+
+### Navegación Completa
+- ✅ **AppLayout**: Navegación integrada con drawer
+- ✅ **Active State**: Indicador visual de ruta activa
+- ✅ **Responsive**: Mobile y desktop
+- ✅ **Type-Safe**: Rutas tipadas con TypeScript
+
+## ✅ COMPLETADO - T007: Lista de Materiales (TDD)
+
+### Componentes Implementados
+- ✅ **MaterialsList**: Grid y List view con paginación
+- ✅ **MaterialCard**: Vista de tarjeta completa con acciones
+- ✅ **MaterialFilters**: Filtros por tipo, disponibilidad y búsqueda
+- ✅ **Tests**: 26 tests completos (MaterialCard + MaterialsList)
+
+### Funcionalidades
+- ✅ **Vistas múltiples**: Grid y tabla
+- ✅ **Paginación**: Funcional con contador
+- ✅ **Selección**: Múltiple con contador
+- ✅ **Filtros**: En tiempo real
+- ✅ **Acciones**: Editar, eliminar, ver
+
+## ✅ COMPLETADO - T008: CRUD de Materiales (TDD)
+
+### Componentes Implementados
+- ✅ **MaterialForm**: Formulario completo con React Hook Form
+- ✅ **MaterialFormModal**: Modal reutilizable para crear/editar
+- ✅ **Validation Schema**: Yup schema completo
+- ✅ **Integration**: Con use cases del dominio
+
+### Funcionalidades
+- ✅ **Crear materiales**: Formulario completo
+- ✅ **Editar materiales**: Pre-poblado con datos
+- ✅ **Validación**: En tiempo real con Yup
+- ✅ **Notificaciones**: Éxito y error
+
+## ✅ COMPLETADO - T009: Integración con API (TDD)
+
+### API Client Implementado
+- ✅ **apiClient**: Cliente Axios con interceptors
+- ✅ **materialsApi**: Cliente específico para Materials
+- ✅ **ApiMaterialRepository**: Implementación de IMaterialRepository
+- ✅ **React Query Hooks**: 7 hooks personalizados
+
+### Funcionalidades
+- ✅ **CRUD completo**: Conectado con backend
+- ✅ **Cache management**: Automático con React Query
+- ✅ **Optimistic updates**: UI responsive
+- ✅ **Error handling**: Robusto y consistente
+- ✅ **Notificaciones**: Integradas con UI store
+- ✅ **Tests**: 33 tests nuevos
+
+### Componentes Actualizados
+- ✅ **MaterialFormModal**: Usa hooks de API
+- ✅ **Materials Page**: Usa hooks de API
+- ✅ **Integración completa**: Frontend ↔ Backend
+
 ---
 
-**Estado**: ✅ Fase 0, T004 y T005 completadas al 100%
-**Siguiente**: T006 - Routing y Navegación
-**Stores**: 3 stores completos con persistencia
-**Tests**: 95+ tests con cobertura completa de estado
+**Estado**: ✅ Fase 0-2 completadas al 100%
+**Siguiente**: T010 - Lista de Órdenes
+**Tests**: 215+ tests con cobertura completa
+**API**: Integración completa con backend

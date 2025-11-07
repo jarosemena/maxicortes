@@ -4,15 +4,7 @@ import { Button } from '../ui/Button';
 import { MaterialForm } from './MaterialForm';
 import { Material } from '../../../domain/entities/Material';
 import { MaterialFormData } from '../../validation/materialSchema';
-import { useMaterialsStore } from '../../../application/stores/useMaterialsStore';
-import { useUIStore } from '../../../application/stores/useUIStore';
-import { CreateMaterialUseCase } from '../../../domain/use-cases/materials/CreateMaterialUseCase';
-import { UpdateMaterialUseCase } from '../../../domain/use-cases/materials/UpdateMaterialUseCase';
-import { MaterialRepository } from '../../../infrastructure/repositories/MaterialRepository';
-
-const materialRepository = new MaterialRepository();
-const createMaterialUseCase = new CreateMaterialUseCase(materialRepository);
-const updateMaterialUseCase = new UpdateMaterialUseCase(materialRepository);
+import { useCreateMaterial, useUpdateMaterial } from '../../../application/hooks/useMaterialsApi';
 
 export interface MaterialFormModalProps {
   open: boolean;
@@ -27,24 +19,31 @@ export const MaterialFormModal: React.FC<MaterialFormModalProps> = ({
   material,
   mode,
 }) => {
-  const { addMaterial, updateMaterial } = useMaterialsStore();
-  const { showSuccess, showError } = useUIStore();
+  const createMaterial = useCreateMaterial();
+  const updateMaterial = useUpdateMaterial();
   const formRef = React.useRef<HTMLFormElement>(null);
+
+  const isLoading = createMaterial.isPending || updateMaterial.isPending;
 
   const handleSubmit = async (data: MaterialFormData) => {
     try {
       if (mode === 'create') {
-        const newMaterial = await createMaterialUseCase.execute(data);
-        addMaterial(newMaterial);
-        showSuccess('Material created successfully');
+        const newMaterial = new Material({
+          id: crypto.randomUUID(),
+          ...data,
+        });
+        await createMaterial.mutateAsync(newMaterial);
       } else if (mode === 'edit' && material) {
-        const updatedMaterial = await updateMaterialUseCase.execute(material.id, data);
-        updateMaterial(updatedMaterial);
-        showSuccess('Material updated successfully');
+        const updatedMaterial = new Material({
+          ...material,
+          ...data,
+        });
+        await updateMaterial.mutateAsync(updatedMaterial);
       }
       onClose();
     } catch (error) {
-      showError(error instanceof Error ? error.message : 'An error occurred');
+      // Error handling is done in the hooks
+      console.error('Error submitting material:', error);
     }
   };
 
@@ -58,10 +57,15 @@ export const MaterialFormModal: React.FC<MaterialFormModalProps> = ({
 
   const actions = (
     <>
-      <Button onClick={onClose} variant="outlined">
+      <Button onClick={onClose} variant="outlined" disabled={isLoading}>
         Cancel
       </Button>
-      <Button onClick={handleSave} variant="contained" color="primary">
+      <Button 
+        onClick={handleSave} 
+        variant="contained" 
+        color="primary"
+        loading={isLoading}
+      >
         {mode === 'create' ? 'Create' : 'Save'}
       </Button>
     </>
