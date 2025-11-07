@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { persist, createJSONStorage } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
 import { Material, MaterialType } from '../../domain/entities/Material';
 
@@ -145,6 +145,7 @@ export const useMaterialsStore = create<MaterialsState>()(
     })),
     {
       name: 'maxicortes-materials-store',
+      storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
         materials: state.materials,
         filters: state.filters,

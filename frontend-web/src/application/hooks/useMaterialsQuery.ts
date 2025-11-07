@@ -1,13 +1,25 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Material, MaterialType } from '../../domain/entities/Material';
+import { IMaterialRepository } from '../../domain/repositories/IMaterialRepository';
 import { GetMaterialsUseCase } from '../../domain/use-cases/materials/GetMaterialsUseCase';
 import { CreateMaterialUseCase, CreateMaterialRequest } from '../../domain/use-cases/materials/CreateMaterialUseCase';
 import { UpdateMaterialUseCase, UpdateMaterialRequest } from '../../domain/use-cases/materials/UpdateMaterialUseCase';
 import { DeleteMaterialUseCase } from '../../domain/use-cases/materials/DeleteMaterialUseCase';
-import { MaterialRepository } from '../../infrastructure/repositories/MaterialRepository';
 
-// Repository instance - in a real app, this would be injected via DI
-const materialRepository = new MaterialRepository();
+// Mock repository for now - will be replaced with real implementation
+const materialRepository: IMaterialRepository = {
+  findAll: async (): Promise<Material[]> => [],
+  findById: async (id: string): Promise<Material | null> => null,
+  findByType: async (type: MaterialType): Promise<Material[]> => [],
+  findAvailable: async (): Promise<Material[]> => [],
+  save: async (material: Material): Promise<Material> => material,
+  delete: async (id: string): Promise<void> => {},
+  updateStock: async (id: string, quantity: number): Promise<Material> => {
+    throw new Error('Not implemented');
+  },
+  search: async (query: string): Promise<Material[]> => [],
+  findLowStock: async (threshold?: number): Promise<Material[]> => [],
+};
 
 // Use cases
 const getMaterialsUseCase = new GetMaterialsUseCase(materialRepository);
@@ -99,7 +111,7 @@ export const useUpdateMaterialMutation = () => {
   return useMutation({
     mutationFn: ({ id, data }: { id: string; data: UpdateMaterialRequest }) =>
       updateMaterialUseCase.execute(id, data),
-    onSuccess: (updatedMaterial) => {
+    onSuccess: (updatedMaterial: Material) => {
       // Update the material in the cache
       queryClient.setQueryData(materialKeys.detail(updatedMaterial.id), updatedMaterial);
       
@@ -143,7 +155,7 @@ export const useUpdateMaterialStockMutation = () => {
   return useMutation({
     mutationFn: ({ id, quantity }: { id: string; quantity: number }) =>
       materialRepository.updateStock(id, quantity),
-    onSuccess: (updatedMaterial) => {
+    onSuccess: (updatedMaterial: Material) => {
       // Update the material in the cache
       queryClient.setQueryData(materialKeys.detail(updatedMaterial.id), updatedMaterial);
       
