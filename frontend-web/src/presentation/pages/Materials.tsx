@@ -5,31 +5,39 @@ import { useMaterialsStore } from '../../application/stores/useMaterialsStore';
 import { useUIStore } from '../../application/stores/useUIStore';
 import { MaterialsList } from '../components/materials/MaterialsList';
 import { MaterialFilters } from '../components/materials/MaterialFilters';
+import { MaterialFormModal } from '../components/materials/MaterialFormModal';
 import { Material } from '../../domain/entities/Material';
 
 const MaterialsPage: React.FC = () => {
-  const { getFilteredMaterials, filters, updateFilters, resetFilters } =
+  const { getFilteredMaterials, filters, updateFilters, resetFilters, removeMaterial } =
     useMaterialsStore();
-  const { showSuccess, showError, openModal } = useUIStore();
+  const { showSuccess } = useUIStore();
+
+  const [createModalOpen, setCreateModalOpen] = useState(false);
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [selectedMaterial, setSelectedMaterial] = useState<Material | undefined>();
 
   const materials = getFilteredMaterials();
 
+  const handleCreate = () => {
+    setCreateModalOpen(true);
+  };
+
   const handleEdit = (material: Material) => {
-    openModal('edit-material', { material });
-    showSuccess(`Editing ${material.name}`);
+    setSelectedMaterial(material);
+    setEditModalOpen(true);
   };
 
   const handleDelete = (id: string) => {
-    // TODO: Implement delete confirmation
-    showError('Delete functionality coming soon');
+    if (window.confirm('Are you sure you want to delete this material?')) {
+      removeMaterial(id);
+      showSuccess('Material deleted successfully');
+    }
   };
 
   const handleView = (material: Material) => {
-    openModal('view-material', { material });
-  };
-
-  const handleCreate = () => {
-    openModal('create-material');
+    setSelectedMaterial(material);
+    setEditModalOpen(true);
   };
 
   return (
@@ -87,6 +95,24 @@ const MaterialsPage: React.FC = () => {
       >
         <AddIcon />
       </Fab>
+
+      {/* Create Material Modal */}
+      <MaterialFormModal
+        open={createModalOpen}
+        onClose={() => setCreateModalOpen(false)}
+        mode="create"
+      />
+
+      {/* Edit Material Modal */}
+      <MaterialFormModal
+        open={editModalOpen}
+        onClose={() => {
+          setEditModalOpen(false);
+          setSelectedMaterial(undefined);
+        }}
+        material={selectedMaterial}
+        mode="edit"
+      />
     </Box>
   );
 };

@@ -146,23 +146,17 @@ frontend-web/
   - Integración con store
 
 ### T008: CRUD de Materiales (TDD)
-- [ ] **CreateMaterial Component**
-  - Formulario con validación
-  - Upload de imagen (opcional)
-  - Preview de datos
-  - Tests: Validación y envío
-  
-- [ ] **EditMaterial Component**
-  - Formulario pre-poblado
-  - Validación de cambios
-  - Confirmación de guardado
-  - Tests: Edición y validación
-  
-- [ ] **MaterialForm Component**
+- [x] **MaterialForm Component**
   - Formulario reutilizable
-  - Validación con Yup/Zod
+  - Validación con Yup
+  - React Hook Form integration
+  - Todos los campos del material
+  
+- [x] **MaterialFormModal Component**
+  - Modal para crear/editar
+  - Integración con use cases
   - Manejo de errores
-  - Tests: Casos válidos e inválidos
+  - Notificaciones de éxito/error
 
 ### T009: Integración con API (TDD)
 - [ ] **Materials API Client**
