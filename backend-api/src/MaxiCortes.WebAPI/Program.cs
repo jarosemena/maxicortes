@@ -66,20 +66,20 @@ var app = builder.Build();
 await DependencyInjection.InitializeDatabaseAsync(app.Services);
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+// Always enable Swagger (not just in Development)
+app.UseSwagger();
+app.UseSwaggerUI(c =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI(c =>
-    {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "MaxiCortes API v1");
-        c.RoutePrefix = string.Empty; // Serve Swagger UI at root
-    });
-}
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "MaxiCortes API v1");
+    c.RoutePrefix = "swagger"; // Serve Swagger UI at /swagger
+});
 
 // Add global exception handling
 app.UseMiddleware<GlobalExceptionMiddleware>();
 
-app.UseHttpsRedirection();
+// Don't redirect to HTTPS in Docker (we're using HTTP)
+// app.UseHttpsRedirection();
+
 app.MapControllers();
 
 app.Run();
